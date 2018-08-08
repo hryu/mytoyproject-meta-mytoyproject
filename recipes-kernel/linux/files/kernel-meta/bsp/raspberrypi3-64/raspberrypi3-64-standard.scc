@@ -1,0 +1,11 @@
+define KMACHINE raspberrypi3-64
+define KTYPE standard
+define KARCH arm64
+
+include ktypes/standard/standard.scc
+branch raspberrypi3-64
+
+include raspberrypi3-64.scc
+
+# enable the ability to run 32 bit apps
+include arch/arm/32bit-compat.scc
