@@ -1,0 +1,77 @@
+From f77355ed963597643057a64bf5ab9305e8206def Mon Sep 17 00:00:00 2001
+From: Hoeun Ryu <hoeun.ryu@gmail.com>
+Date: Wed, 15 Aug 2018 02:21:30 +0900
+Subject: [PATCH] event: fix btrfs__reserve_extent event class for 4.17 kernel
+ above
+
+ The commit "3dca5c942dac60164e6a6e89172f25b86af07ce7 btrfs: trace: Remove
+unnecessary fs_info parameter for btrfs__reserve_extent event class" removes
+fs_info from event class.
+
+Signed-off-by: Hoeun Ryu <hoeun.ryu@gmail.com>
+---
+ instrumentation/events/lttng-module/btrfs.h | 51 ++++++++++++++++++++++++++++-
+ 1 file changed, 50 insertions(+), 1 deletion(-)
+
+diff --git a/instrumentation/events/lttng-module/btrfs.h b/instrumentation/events/lttng-module/btrfs.h
+index 4eb0db2..454074d 100644
+--- a/instrumentation/events/lttng-module/btrfs.h
++++ b/instrumentation/events/lttng-module/btrfs.h
+@@ -1296,7 +1296,56 @@ LTTNG_TRACEPOINT_EVENT_INSTANCE(btrfs__reserved_extent,  btrfs_reserved_extent_f
+ 
+ #endif /* #else #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)) */
+ 
+-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4,14,0))
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4,17,0))
++
++LTTNG_TRACEPOINT_EVENT_MAP(find_free_extent,
++
++	btrfs_find_free_extent,
++
++	TP_PROTO(const struct btrfs_fs_info *info, u64 num_bytes, u64 empty_size,
++		 u64 data),
++
++	TP_ARGS(info, num_bytes, empty_size, data),
++
++	TP_FIELDS(
++		ctf_integer(u64, num_bytes, num_bytes)
++		ctf_integer(u64, empty_size, empty_size)
++		ctf_integer(u64, data, data)
++	)
++)
++
++LTTNG_TRACEPOINT_EVENT_CLASS(btrfs__reserve_extent,
++
++	TP_PROTO(const struct btrfs_block_group_cache *block_group, u64 start,
++		 u64 len),
++
++	TP_ARGS(block_group, start, len),
++
++	TP_FIELDS(
++		ctf_integer(u64, bg_objectid, block_group->key.objectid)
++		ctf_integer(u64, flags, block_group->flags)
++		ctf_integer(u64, start, start)
++		ctf_integer(u64, len, len)
++	)
++)
++
++LTTNG_TRACEPOINT_EVENT_INSTANCE(btrfs__reserve_extent, btrfs_reserve_extent,
++
++	TP_PROTO(const struct btrfs_block_group_cache *block_group, u64 start,
++		 u64 len),
++
++	TP_ARGS(block_group, start, len)
++)
++
++LTTNG_TRACEPOINT_EVENT_INSTANCE(btrfs__reserve_extent, btrfs_reserve_extent_cluster,
++
++	TP_PROTO(const struct btrfs_block_group_cache *block_group, u64 start,
++		 u64 len),
++
++	TP_ARGS(block_group, start, len)
++)
++
++#elif (LINUX_VERSION_CODE >= KERNEL_VERSION(4,14,0))
+ 
+ LTTNG_TRACEPOINT_EVENT_MAP(find_free_extent,
+ 
