@@ -1,0 +1,31 @@
+From 8ed60ad3870bd094a54c35e5e119490f51046620 Mon Sep 17 00:00:00 2001
+From: Hoeun Ryu <hoeun.ryu@daum.net>
+Date: Sun, 12 Aug 2018 00:18:57 +0900
+Subject: [PATCH] kconfig: support yocto build's menuconfig command
+
+The commit "1c5af5cf9308fff kconfig: refactor ncurses package checks for
+building mconf and nconf" refactored ncurses package checks.
+Yocto build system exports CROSS_CURSES_LIB to kernel build system. This
+patch checks this variable and use it.
+
+Signed-off-by: Hoeun Ryu <hoeun.ryu@daum.net>
+---
+ scripts/kconfig/mconf-cfg.sh | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/scripts/kconfig/mconf-cfg.sh b/scripts/kconfig/mconf-cfg.sh
+index e6f9fac..2046f071 100755
+--- a/scripts/kconfig/mconf-cfg.sh
++++ b/scripts/kconfig/mconf-cfg.sh
+@@ -36,6 +36,11 @@ if [ -f /usr/include/ncurses.h ]; then
+ 	exit 0
+ fi
+ 
++if [ "$CROSS_CURSES_LIB" != "" ]; then
++	echo libs=\"${CROSS_CURSES_LIB}\"
++	exit 0
++fi
++
+ echo >&2 "*"
+ echo >&2 "* Unable to find the ncurses package."
+ echo >&2 "* Install ncurses (ncurses-devel or libncurses-dev"
