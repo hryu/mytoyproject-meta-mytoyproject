@@ -1,0 +1,5 @@
+#
+# use bcmrpi3_defconfig in tree for linux-raspberrypi-dev and defconfig in tree
+# for linux-yocto-dev or linux-upstream kernel
+#
+#kconf hardware raspberrypi3-64.cfg
