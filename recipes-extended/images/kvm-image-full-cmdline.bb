@@ -18,6 +18,10 @@ IMAGE_FEATURES += "ssh-server-openssh"
 
 IMAGE_LINGUAS = " "
 
+# Debug / Profile
+IMAGE_INSTALL_append = " tcf-agent openssh-sftp-server"
+EXTRA_IMAGE_FEATURES += "debug-tweaks tools-debug tools-profile eclipse-debug"
+
 LICENSE = "MIT"
 
 inherit core-image
