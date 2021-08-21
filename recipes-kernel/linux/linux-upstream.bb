@@ -12,7 +12,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files/patches:"
 LINUX_BRANCH ?= "master"
 KMETA = "kernel-meta"
 
-SRC_URI = "git:////home/pokyuser/mytoyproject/linux;protocol=file;branch=${LINUX_BRANCH};name=machine \
+SRC_URI = "git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git;protocol=git;branch=${LINUX_BRANCH};name=machine \
 	   git://git.yoctoproject.org/yocto-kernel-cache;type=kmeta;name=meta;branch=master;destsuffix=${KMETA} \
            file://0001-kconfig-support-yocto-build-s-menuconfig-command.patch"
 
